@@ -13,7 +13,8 @@ import Typography from '@material-ui/core/Typography';
 import Badge from '@material-ui/core/Badge';
 import ShoppingCart from '@material-ui/icons/ShoppingCart'
 import Divider from '@material-ui/core/Divider';
-
+import Snackbar from '@material-ui/core/Snackbar';
+import CloseIcon from '@material-ui/icons/Close';
 
 class Details extends Component {
 	constructor() {
@@ -189,6 +190,15 @@ class Details extends Component {
         this.props.history.push('/checkout');
     }
 	
+	//close event handler
+    handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        this.setState({ open: false, btnClicked: '' });
+    }
+	
 	render() {
 		const { photo_URL, restaurant_name, address, customer_rating, average_price, number_customers_rated } = this.state.restaurantDetails;
 		return (
@@ -246,6 +256,41 @@ class Details extends Component {
                             </Card>
                         </Grid>
                     </Grid>
+					<Snackbar
+                        anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'left',
+                        }}
+                        open={this.state.open}
+                        autoHideDuration={6000}
+                        onClose={this.handleClose}
+                        ContentProps={{
+                            'aria-describedby': 'message-id',
+                        }}
+                        message={<span id="message-id">{
+                            this.state.btnClicked === 'CHECKOUT' ?
+                                'Please add an item to your cart!' :
+                                this.state.btnClicked === 'LOGIN' ?
+                                    'Please login first!' :
+                                    this.state.btnClicked === 'ADD' ?
+                                        'Item added to cart!' :
+                                        this.state.btnClicked === 'INCREMENT' ?
+                                            'Item quantity increased by 1!' :
+                                            this.state.btnClicked === 'REMOVE' ?
+                                                'Item removed from cart!' :
+                                                this.state.btnClicked === 'DECREMENT' ?
+                                                    'Item quantity decreased by 1!' : ''}</span>}
+                        action={[
+                            <IconButton
+                                key="close"
+                                aria-label="Close"
+                                color="inherit"
+                                onClick={this.handleClose}
+                            >
+                                <CloseIcon />
+                            </IconButton>,
+                        ]}
+                    />
 				</div>
 			</div>
 		)
