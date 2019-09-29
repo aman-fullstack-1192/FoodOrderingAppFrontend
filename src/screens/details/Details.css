@@ -20,9 +20,92 @@
 .bggrey{
     background:#e7e7e7;
 }
+.item-list-container{
+    padding: 2rem 4rem;
+}
+.mt-15{
+    margin-top: 15px;
+    text-transform: uppercase;
+}
+.divider-margin-10{
+    margin: 10px 0px !important;
+}
+.flex{
+    display: flex;
+}
+.pd-1-per{
+    padding: 1%;
+}
+.flex-5{
+    flex: 5;
+}
+.flex-75{
+    flex: 75;
+    text-transform: capitalize;
+}
+.flex-10{
+    flex: 10;
+}
+.plus-btn{
+    font-size: 24px;
+    line-height: 18px;
+    font-weight: 700;
+    color: #757575;
+    cursor: pointer;
+}
+.mycart{
+    margin-left: 20px;
+    font-weight: 700;
+}
+.right{
+    float:right;
+}
+.mr-8{
+    margin-right: 8px;
+}
+.width-5 {
+    width: 5%;
+}
+.width-40 {
+    width: 40%;
+}
+.black-color{
+    color: black;
+}
+.width-2-5 {
+    width: 2.5%;
+}
+.mt-24-px{
+    margin-top: 24px !important;
+}
+.non-veg{
+    color: #be4a47;
+}
+.veg{
+    color: #5a9a5a;
+}
+.minus-icon{
+    font-size: 24px;
+    width: 1em;
+    height: 1em;
+    line-height: 1em;
+    font-weight: 700;
+    color: black;
+}
+.capital{
+    text-transform: capitalize;
+}
+.checkout-grey-color{
+    color:#7f7f7f;
+}
+.btn-hover:hover{
+    background-color: yellow !important;
+}
+.width-100 {
+    width: 100%;
+}
 @media only screen and (max-width: 600px) {
     .mobile-text-center{
         text-align: center;
     }
 }
-
