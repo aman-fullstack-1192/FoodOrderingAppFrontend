@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-//import Home from './home/Home';
-//import Details from './details/Details';
-//import Checkout from './checkout/Checkout';
-//import Profile from './profile/Profile';
+import Home from './home/Home';
+import Details from './details/Details';
+import Checkout from './checkout/Checkout';
+import Profile from './profile/Profile';
 import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
 
 class Controller extends Component {
