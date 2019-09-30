@@ -1,26 +1,26 @@
 import React, { Component } from 'react';
 import './Details.css';
 import { withStyles } from '@material-ui/core/styles';
-const styles = theme => ({});
 import Header from '../../common/header/Header';
-import Grid from '@material-ui/core/Grid';
+import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
+import Snackbar from '@material-ui/core/Snackbar';
+import CloseIcon from '@material-ui/icons/Close';
+import Badge from '@material-ui/core/Badge';
+import ShoppingCart from '@material-ui/icons/ShoppingCart'
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import Badge from '@material-ui/core/Badge';
-import ShoppingCart from '@material-ui/icons/ShoppingCart'
-import Divider from '@material-ui/core/Divider';
-import Snackbar from '@material-ui/core/Snackbar';
-import CloseIcon from '@material-ui/icons/Close';
+import Grid from '@material-ui/core/Grid';
+const styles = theme => ({});
 
 class Details extends Component {
-	constructor() {
+    constructor() {
         super();
         this.state = {
-			open: false,
+            open: false,
             btnClicked: '',
             checkoutArr: [],
             itemAdded: 0,
@@ -56,8 +56,8 @@ class Details extends Component {
         xhrRestaurant.setRequestHeader('Cache-Control', 'no-cache');
         xhrRestaurant.send(dataRestaurant);
     }
-	
-	//get category
+
+    //get category
     getCategory = () => {
         let data = this.state.restaurantDetails;
         let dataLength = data.categories && data.categories.length;
@@ -66,8 +66,60 @@ class Details extends Component {
                 return <span key={index}>{item.category_name}{dataLength === index + 1 ? '' : ', '} </span>
             }) : null
     }
-	
-	//remove menu click handler
+
+    //get each dish
+    getEachDish = (item_list, category_name) => {
+        return item_list.map((item, index) => {
+            item = { ...item, 'category_name': category_name }
+            return <div className="flex pd-1-per" key={index}>
+                <div className="flex-5"><i className={item.item_type === 'NON_VEG' ? 'fa fa-circle non-veg' : 'fa fa-circle veg'}></i></div>
+                <div className="flex-75">{item.item_name}</div>
+                <div className="flex-10"><i className='fa fa-inr'></i> {item.price}.00</div>
+                <div className="flex-10 plus-btn">
+                    <IconButton aria-label="Add" style={{ padding: '1px' }} onClick={this.addMenuClick(item, 'ADD')}>
+                        <AddIcon />
+                    </IconButton>
+                </div>
+            </div>
+        })
+    }
+
+    //get checkout dish list
+    getCheckoutDishList = (checkoutArr) => {
+        return checkoutArr.map((item, index) => {
+            return <div className="flex width-100 pd-1-per" key={index}>
+                <div className="width-5"><i className={item.item_type === 'NON_VEG' ? 'fa fa-stop-circle-o non-veg' : 'fa fa-stop-circle-o veg'}></i></div>
+                <div className="width-40 capital checkout-grey-color">{item.item_name}</div>
+                <div className="width-40">
+                    <IconButton aria-label="AddIcon" className="btn-hover" style={{ padding: '1px' }} onClick={this.removeMenuClick(item)}>
+                        <div className="minus-icon"> - </div>
+                    </IconButton>
+                    {item.count}
+                    <IconButton aria-label="Add" className="btn-hover" style={{ padding: '1px' }} onClick={this.addMenuClick(item, 'INCREMENT')}>
+                        <AddIcon className="black-color" />
+                    </IconButton>
+                </div>
+                <div className="width-2-5 checkout-grey-color"><i className='fa fa-inr'></i></div>
+                <div className='checkout-grey-color'> {item.totalItemPrice}.00</div>
+            </div>
+        })
+    }
+
+    //get category list
+    getCategoryList = () => {
+        let data = this.state.restaurantDetails;
+        let dataLength = data.categories && data.categories.length;
+        return dataLength > 0 ?
+            data.categories.map((item, index) => {
+                return <div className="mt-15" key={'item' + item.id}>
+                    <div>{item.category_name}</div>
+                    <Divider className="divider-margin-10" />
+                    {this.getEachDish(item.item_list, item.category_name)}
+                </div>
+            }) : null
+    }
+
+    //remove menu click handler
     removeMenuClick = item => event => {
         const itemLength = this.state.itemAdded - 1;
         if (item.count === 1) {
@@ -92,7 +144,7 @@ class Details extends Component {
         }
     }
 
-	//add menu click handler
+    //add menu click handler
     addMenuClick = (item, method) => event => {
         let selectedItem, newAdded;
         let duplicates = this.state.checkoutArr.filter(data => item.id === data.id && item.category_name === data.category_name);
@@ -116,60 +168,17 @@ class Details extends Component {
         const totalPrice = this.state.totalPrice + item.price;
         this.setState({ checkoutArr: newAdded, open: true, btnClicked: method, itemAdded: itemLength, totalPrice: totalPrice });
     };
-	
-	//get each dish
-    getEachDish = (item_list, category_name) => {
-        return item_list.map((item, index) => {
-            item = { ...item, 'category_name': category_name }
-            return <div className="flex pd-1-per" key={index}>
-                <div className="flex-5"><i className={item.item_type === 'NON_VEG' ? 'fa fa-circle non-veg' : 'fa fa-circle veg'}></i></div>
-                <div className="flex-75">{item.item_name}</div>
-                <div className="flex-10"><i className='fa fa-inr'></i> {item.price}.00</div>
-                <div className="flex-10 plus-btn">
-                    <IconButton aria-label="Add" style={{ padding: '1px' }} onClick={this.addMenuClick(item, 'ADD')}>
-                        <AddIcon />
-                    </IconButton>
-                </div>
-            </div>
-        })
+
+    //close event handler
+    handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        this.setState({ open: false, btnClicked: '' });
     }
-	
-	//get category list
-    getCategoryList = () => {
-        let data = this.state.restaurantDetails;
-        let dataLength = data.categories && data.categories.length;
-        return dataLength > 0 ?
-            data.categories.map((item, index) => {
-                return <div className="mt-15" key={'item' + item.id}>
-                    <div>{item.category_name}</div>
-                    <Divider className="divider-margin-10" />
-                    {this.getEachDish(item.item_list, item.category_name)}
-                </div>
-            }) : null
-    }
-	
-	//get checkout dish list
-    getCheckoutDishList = (checkoutArr) => {
-        return checkoutArr.map((item, index) => {
-            return <div className="flex width-100 pd-1-per" key={index}>
-                <div className="width-5"><i className={item.item_type === 'NON_VEG' ? 'fa fa-stop-circle-o non-veg' : 'fa fa-stop-circle-o veg'}></i></div>
-                <div className="width-40 capital checkout-grey-color">{item.item_name}</div>
-                <div className="width-40">
-                    <IconButton aria-label="AddIcon" className="btn-hover" style={{ padding: '1px' }} onClick={this.removeMenuClick(item)}>
-                        <div className="minus-icon"> - </div>
-                    </IconButton>
-                    {item.count}
-                    <IconButton aria-label="Add" className="btn-hover" style={{ padding: '1px' }} onClick={this.addMenuClick(item, 'INCREMENT')}>
-                        <AddIcon className="black-color" />
-                    </IconButton>
-                </div>
-                <div className="width-2-5 checkout-grey-color"><i className='fa fa-inr'></i></div>
-                <div className='checkout-grey-color'> {item.totalItemPrice}.00</div>
-            </div>
-        })
-    }
-	
-	//checkout event handler
+
+    //checkout event handler
     checkoutHandler = () => {
         if (this.state.checkoutArr && this.state.checkoutArr.length === 0) {
             this.setState({ open: true, btnClicked: 'CHECKOUT' });
@@ -189,23 +198,14 @@ class Details extends Component {
         sessionStorage.setItem('customer-cart', JSON.stringify(customerCart));
         this.props.history.push('/checkout');
     }
-	
-	//close event handler
-    handleClose = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
 
-        this.setState({ open: false, btnClicked: '' });
-    }
-	
-	render() {
-		const { photo_URL, restaurant_name, address, customer_rating, average_price, number_customers_rated } = this.state.restaurantDetails;
-		return (
-			<div>
-				<Header />
-				<div>
-					<Grid container spacing={24} className="bggrey mobile-text-center" >
+    render() {
+        const { photo_URL, restaurant_name, address, customer_rating, average_price, number_customers_rated } = this.state.restaurantDetails;
+        return (
+            <div>
+                <Header />
+                <div>
+                    <Grid container spacing={24} className="bggrey mobile-text-center" >
                         <Grid item xs={12} sm={3} className="text-center">
                             <img src={photo_URL} width="300" alt={photo_URL} height="250" className="margin-top-20" />
                         </Grid>
@@ -233,7 +233,7 @@ class Details extends Component {
                             </Grid>
                         </Grid>
                     </Grid>
-					<Grid container spacing={24} className="item-list-container">
+                    <Grid container spacing={24} className="item-list-container">
                         <Grid item xs={12} sm={7}>
                             {this.getCategoryList()}
                         </Grid>
@@ -251,12 +251,12 @@ class Details extends Component {
                                     <div className="bold pd-1-per">TOTAL AMOUNT <span className="right mr-8"><i className='fa fa-inr'></i> {this.state.totalPrice}.00</span></div>
                                     <Button className="mt-24-px" variant="contained" fullWidth size="medium" color="primary" onClick={this.checkoutHandler}>
                                         CHECKOUT
-									</Button>
+                                </Button>
                                 </CardContent>
                             </Card>
                         </Grid>
                     </Grid>
-					<Snackbar
+                    <Snackbar
                         anchorOrigin={{
                             vertical: 'bottom',
                             horizontal: 'left',
@@ -291,10 +291,10 @@ class Details extends Component {
                             </IconButton>,
                         ]}
                     />
-				</div>
-			</div>
-		)
-	}
+                </div>
+            </div>
+        )
+    }
 }
 
 export default withStyles(styles)(Details);

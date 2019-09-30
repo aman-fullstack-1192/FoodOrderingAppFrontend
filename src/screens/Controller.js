@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import Home from './home/Home';
 import Details from './details/Details';
 import Checkout from './checkout/Checkout';
-import Profile from './profile/Profile';
 import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
 
 class Controller extends Component {
@@ -31,9 +30,6 @@ class Controller extends Component {
                             <Checkout {...props} baseUrl={this.baseUrl} />
                         )
                     )} />
-
-                    {/* Routing to the Profile page */}
-                    <Route path='/profile' render={(props) => <Profile {...props} baseUrl={this.baseUrl} />} />
                 </div>
             </Router>
         )
